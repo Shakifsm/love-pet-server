@@ -2,8 +2,10 @@ const express = require('express');
 const app = express();
 const cors = require('cors');
 const bodyParser = require('body-parser');
+const fileUpload = require('express-fileupload');
 // const ObjectID = require('mongodb').ObjectID
 const MongoClient = require('mongodb').MongoClient;
+const { static } = require('express');
 require('dotenv').config();
 
 
@@ -11,6 +13,8 @@ const port = process.env.PORT || 5000;
 
 app.use(cors());
 app.use(bodyParser.json());
+app.use(express.static('services'));
+app.use(fileUpload())
 
 app.get('/', (req, res) => {
   res.send('Hello World!')
@@ -42,6 +46,27 @@ client.connect(err => {
     })
 })
 
+const servicesCollection = client.db("lovePet").collection("services");
+
+app.post('/addAService', (req, res) => {
+  const newService = req.body;
+  servicesCollection.insertOne(newService)
+    .then(result => {
+      console.log('inserted count :', result.insertedCount);
+      res.send(result.insertedCount > 0)
+    })
+  })
+
+
+  app.get('/services', (req, res) => {
+    servicesCollection.find()
+      .toArray((err, items) => {
+        res.send(items)
+      })
+  })
+
+
+// client.close();
 });
 
 
@@ -50,8 +75,3 @@ client.connect(err => {
 app.listen(port, () => {
   console.log(`Example app listening at http://localhost:${port}`)
 })
-
-
-
-
-
