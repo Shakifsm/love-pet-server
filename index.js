@@ -28,33 +28,47 @@ client.connect(err => {
   const appoinmentCollection = client.db("lovePet").collection("appoinments");
 
   app.post('/addAppoinment', (req, res) => {
-      const appoinment = req.body;
-      console.log(appoinment);
-      appoinmentCollection.insertOne(appoinment)
+    const appoinment = req.body;
+    console.log(appoinment);
+    appoinmentCollection.insertOne(appoinment)
       .then(result => {
         console.log('inserted count :', result.insertedCount);
         res.send(result.insertedCount > 0)
       })
   })
 
-  app.post('/appoinmentsByDate', (req, res) => {
-    const date = req.body;
-    console.log(date.date);
-    appoinmentCollection.find({date : date.date})
-    .toArray((err, documents) => {
-        res.send(documents)
-    })
-})
 
-const servicesCollection = client.db("lovePet").collection("services");
+  app.get('/allAppointmets', (req, res) => {
+    appoinmentCollection.find()
+      .toArray((err, items) => {
+        res.send(items)
+      })
+  })
 
-app.post('/addAService', (req, res) => {
-  const newService = req.body;
-  servicesCollection.insertOne(newService)
-    .then(result => {
-      console.log('inserted count :', result.insertedCount);
-      res.send(result.insertedCount > 0)
-    })
+
+    app.post('/appoinmentsByDate', (req, res) => {
+      const date = req.body;
+      const email = req.body.email
+      console.log(date.date);
+      appoinmentCollection.find({date : date.date})
+      .toArray((err, documents) => {
+          res.send(documents)
+      })
+  })
+
+
+ 
+
+
+  const servicesCollection = client.db("lovePet").collection("services");
+
+  app.post('/addAService', (req, res) => {
+    const newService = req.body;
+    servicesCollection.insertOne(newService)
+      .then(result => {
+        console.log('inserted count :', result.insertedCount);
+        res.send(result.insertedCount > 0)
+      })
   })
 
 
@@ -66,7 +80,28 @@ app.post('/addAService', (req, res) => {
   })
 
 
-// client.close();
+  const reviewsCollection = client.db("lovePet").collection("reviews");
+
+
+  app.post('/addAReview', (req, res) => {
+    const newReview = req.body;
+    reviewsCollection.insertOne(newReview)
+      .then(result => {
+        console.log('inserted count :', result.insertedCount);
+        res.send(result.insertedCount > 0)
+      })
+  })
+
+
+  app.get('/reviews', (req, res) => {
+    reviewsCollection.find()
+      .toArray((err, items) => {
+        res.send(items)
+      })
+  })
+
+
+  // client.close();
 });
 
 
@@ -75,3 +110,5 @@ app.post('/addAService', (req, res) => {
 app.listen(port, () => {
   console.log(`Example app listening at http://localhost:${port}`)
 })
+
+
