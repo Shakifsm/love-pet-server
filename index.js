@@ -3,7 +3,6 @@ const app = express();
 const cors = require('cors');
 const bodyParser = require('body-parser');
 const fileUpload = require('express-fileupload');
-// const ObjectID = require('mongodb').ObjectID
 const MongoClient = require('mongodb').MongoClient;
 const { static } = require('express');
 require('dotenv').config();
